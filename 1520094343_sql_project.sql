@@ -115,9 +115,24 @@ ORDER BY `COST_MEMBER` DESC
 
 /* Q9: This time, produce the same result as in Q8, but using a subquery. */
 
+SELECT member, facility, cost
+FROM (
 
+SELECT A.surname AS member, C.name AS facility,
+CASE
+WHEN A.memid =0
+THEN B.slots * C.guestcost
+ELSE B.slots * C.membercost
+END AS cost
+FROM  `Members` A
+JOIN  `Bookings` B ON A.memid = B.memid
+INNER JOIN  `Facilities` C ON B.facid = C.facid
+WHERE B.starttime >=  '2012-09-14'
+AND B.starttime <  '2012-09-15'
+) AS bookings
 
-
+WHERE cost >30
+ORDER BY cost DESC
 
 
 /* Q10: Produce a list of facilities with a total revenue less than 1000.
